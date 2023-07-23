@@ -3,18 +3,48 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@cosmjs/cosmwasm-stargate": "^0.30.1",
+    "@cosmjs/launchpad": "^0.27.1",
+    "@cosmjs/math": "^0.30.1",
+    "@cosmjs/stargate": "^0.30.1",
+    "@emotion/react": "^11.10.5",
+    "@emotion/styled": "^11.10.5",
+    "@keplr-wallet/provider": "^0.12.4",
+    "@keplr-wallet/types": "^0.12.4",
+    "@mui/icons-material": "^5.10.9",
+    "@mui/material": "^5.10.12",
+    "@reduxjs/toolkit": "^1.9.0",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
+    "axios": "^1.2.0",
+    "big-integer": "^1.6.51",
+    "bignumber": "^1.1.0",
+    "bignumber.js": "^9.1.0",
+    "bip39": "^3.0.4",
+    "circomlib": "^0.2.3",
+    "ethers": "^5.7.2",
+    "hdkey": "^2.0.1",
+    "notistack": "^2.0.8",
+    "password-hash": "^1.2.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-redux": "^8.0.5",
+    "react-router": "^6.4.3",
+    "react-router-dom": "^5.3.3",
     "react-scripts": "5.0.1",
-    "web-vitals": "^2.1.4"
+    "redux": "^4.2.0",
+    "save-file": "^2.3.1",
+    "web-vitals": "^2.1.4",
+    "web3": "^1.8.1",
+    "web3-utils": "^1.8.1",
+    "webpack": "^5.74.0"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
+    "start": "GENERATE_SOURCEMAP=false react-app-rewired start",
+    "winStart": "set \"GENERATE_SOURCEMAP=false\" && react-app-rewired start",
+    "build": "react-app-rewired build",
+    "test": "react-app-rewired test",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -34,5 +64,17 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "assert": "^2.0.0",
+    "buffer": "^6.0.3",
+    "crypto-browserify": "^3.12.0",
+    "https-browserify": "^1.0.0",
+    "os-browserify": "^0.3.0",
+    "process": "^0.11.10",
+    "react-app-rewired": "^2.2.1",
+    "stream-browserify": "^3.0.0",
+    "stream-http": "^3.2.0",
+    "url": "^0.11.0"
   }
 }
