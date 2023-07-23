@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Button, Container, Grid, TextField, Typography } from "@mui/material";
+import { Button, Container, Grid, Typography } from "@mui/material";
 import {
   Send as SendIcon,
   Settings as SettingsIcon,
@@ -11,13 +11,15 @@ function Bridge() {
   const [cosmosSender, setCosmosSender] = useState("");
   const [ethReceiver, setEthReceiver] = useState("");
   const [tokenAmount, setTokenAmount] = useState("");
+  const [keplrNetworkChain, setKeplrNetworkChain] = useState("");
+  const [metamaskNetworkChain, setMetamaskNetworkChain] = useState("");
 
   useEffect(() => {
     // Add event listener for Kepler chain changes
     if (window.keplr && window.keplr.experimentalSubscribe) {
       const subscription = window.keplr.experimentalSubscribe({
         type: "chain-event",
-        chainIds: ["Oraichain"], // Add your Cosmos chain ID here
+        chainIds: ["Oraichain-testnet"], // Add your Cosmos chain ID here
       });
 
       subscription.on("data", (event) => {
@@ -31,20 +33,25 @@ function Bridge() {
       };
     }
 
-    // Add event listener for MetaMask address change
-    const handleAddressChange = (accounts) => {
-      setEthReceiver(accounts[0]);
-    };
-
+    // Add event listener for MetaMask chain changes
     if (window.ethereum) {
-      window.ethereum.on("accountsChanged", handleAddressChange);
-    }
+      const handleMetamaskChainChange = (chainId) => {
+        if (chainId === "97") {
+          setMetamaskNetworkChain("BSC Testnet");
+        } else if (chainId === "4002") {
+          setMetamaskNetworkChain("FTM Testnet");
+        } else {
+          setMetamaskNetworkChain("");
+        }
+      };
 
-    return () => {
-      if (window.ethereum) {
-        window.ethereum.off("accountsChanged", handleAddressChange);
-      }
-    };
+      window.ethereum.on("chainChanged", handleMetamaskChainChange);
+      handleMetamaskChainChange(window.ethereum.chainId);
+
+      return () => {
+        window.ethereum.off("chainChanged", handleMetamaskChainChange);
+      };
+    }
   }, []);
 
   const handleAmountChange = (event) => {
@@ -61,7 +68,7 @@ function Bridge() {
         throw new Error("Keplr extension not found");
       }
 
-      const chainId = "Oraichain";
+      const chainId = "Oraichain-testnet";
       // Request access to Keplr
       await window.keplr.enable(chainId);
 
@@ -70,6 +77,9 @@ function Bridge() {
       const accounts = await offlineSigner.getAccounts();
 
       setCosmosSender(accounts[0].address);
+
+      // Set the network chain to "Oraichain-testnet"
+      setKeplrNetworkChain("Oraichain-testnet");
 
       console.log("Kepler connected");
       console.log("Cosmos Address:", accounts[0].address);
@@ -80,6 +90,7 @@ function Bridge() {
 
   const handleKeplerDisconnect = () => {
     setCosmosSender("");
+    setKeplrNetworkChain("");
     console.log("Kepler disconnected");
   };
 
@@ -93,6 +104,21 @@ function Bridge() {
 
       // Update the eth receiver address
       setEthReceiver(ethAddress);
+
+      // Set the network chain to "Ethereum Network"
+      // Get the network ID from Metamask
+      const networkId = await window.ethereum.request({
+        method: "net_version",
+      });
+      
+      // Map the network ID to the network name
+      if (networkId === "97") {
+        setMetamaskNetworkChain("BSC Testnet");
+      } else if (networkId === "4002") {
+        setMetamaskNetworkChain("FTM Testnet");
+      } else {
+        setMetamaskNetworkChain("");
+      }
 
       // Display a success message or perform any other actions
       console.log("Connected to Metamask wallet");
@@ -130,6 +156,8 @@ function Bridge() {
       <Header
         handleKeplerConnect={handleKeplerConnect}
         handleMetamaskConnect={handleMetamaskConnect}
+        keplrNetworkChain={keplrNetworkChain}
+        metamaskNetworkChain={metamaskNetworkChain}
       />
       <Grid
         container
@@ -146,7 +174,6 @@ function Bridge() {
           cosmosSender={cosmosSender}
           handleTransfer={handleTransfer}
           maxWidth="sm" // Set the maxWidth prop here
-          
         />
       </Grid>
     </Container>

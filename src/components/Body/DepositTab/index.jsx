@@ -1,13 +1,7 @@
 import React, { useState } from "react";
-import {
-  Button,
-  Container,
-  Grid,
-  MenuItem,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Button, Container, Grid, MenuItem, TextField, Typography } from "@mui/material";
 import { queryUserTokenBalance } from "src/services/kelpWallet";
+import { sendToken } from "src/services/transferToken";
 
 const DepositTab = ({
   tokenAmount,
@@ -15,26 +9,40 @@ const DepositTab = ({
   ethReceiver,
   handleRecipientAddressChange,
   cosmosSender,
-  handleTransfer,
 }) => {
   const [selectedCoin, setSelectedCoin] = useState("");
-  const [balance, setBalance] = useState(0);
+  const [balance, setBalance] = useState({ balance: 0 });
+  const [cosmosTokenAddress, setCosmosTokenAddress] = useState("");
 
   const handleCoinChange = async (event) => {
     setSelectedCoin(event.target.value);
 
-    // Update the balance based on the selected coin and user's Kepler address
+    // Update the balance and cosmosTokenAddress based on the selected coin and user's Kepler address
     const coinBalance = await getCoinBalance(event.target.value, cosmosSender);
     setBalance(coinBalance);
-    handleAmountChange(event, coinBalance);
+    setCosmosTokenAddress(getCosmosTokenAddress(event.target.value)); // Set the cosmosTokenAddress based on the selected coin
+    handleAmountChange({ target: { value: "" } });
   };
 
-  const handleMaxAmount = (balance) => {
+  const handleMaxAmount = () => {
     handleAmountChange({ target: { value: balance.balance } });
+  };
+
+  const handleTransfer = async () => {
+    try {
+      // Call the sendToken function here
+      const res = await sendToken(cosmosTokenAddress, tokenAmount, ethReceiver);
+      console.log("Transaction result:", res);
+      // Perform any actions or show success message as needed
+    } catch (error) {
+      console.error("Error transferring tokens:", error);
+      // Handle errors or show error message
+    }
   };
 
   // Function to get the balance of a coin
   const getCoinBalance = async (coin, keplerAddress) => {
+    // Switch case to handle different coin balances
     switch (coin) {
       case "BTC":
         // Query balance of BTC token for the user's Kepler address
@@ -61,7 +69,32 @@ const DepositTab = ({
         );
 
       default:
-        return 0;
+        return { balance: 0 };
+    }
+  };
+
+  // Function to get the cosmosTokenAddress based on the selected coin
+  const getCosmosTokenAddress = (coin) => {
+    // Switch case to handle different coin addresses
+    switch (coin) {
+      case "BTC":
+        // Return the BTC token address
+        return "orai1wdd0qs5f2swxh2trmdvu2xu94qu49zpnqpmazj02ts2xkhqu3x4qu3smud"; // Replace with the actual address
+
+      case "ETH":
+        // Return the ETH token address
+        return "orai1wdd0qs5f2swxh2trmdvu2xu94qu49zpnqpmazj02ts2xkhqu3x4qu3smud"; // Replace with the actual address
+
+      case "XRP":
+        // Return the XRP token address
+        return "orai1wdd0qs5f2swxh2trmdvu2xu94qu49zpnqpmazj02ts2xkhqu3x4qu3smud"; // Replace with the actual address
+
+      case "HIJIN":
+        // Return the HIJIN token address
+        return "orai1wdd0qs5f2swxh2trmdvu2xu94qu49zpnqpmazj02ts2xkhqu3x4qu3smud"; // Replace with the actual address
+
+      default:
+        return "";
     }
   };
 
@@ -114,7 +147,7 @@ const DepositTab = ({
                 <Button
                   variant="contained"
                   color="primary"
-                  onClick={() => handleMaxAmount(balance)}
+                  onClick={() => handleMaxAmount()}
                 >
                   Max
                 </Button>
@@ -139,6 +172,12 @@ const DepositTab = ({
             color="primary"
             onClick={handleTransfer}
             fullWidth
+            disabled={
+              !cosmosTokenAddress ||
+              !ethReceiver ||
+              !tokenAmount ||
+              parseFloat(tokenAmount) > parseFloat(balance.balance)
+            }
           >
             Transfer
           </Button>
