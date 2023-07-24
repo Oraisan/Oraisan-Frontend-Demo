@@ -1,13 +1,15 @@
 // Body.js
 
+import { getClaimProof } from "src/contracts/getClaimProof";
 import React, { useEffect, useState } from "react";
-import { Box, Button, Container, Grid, TextField } from "@mui/material";
-import { Send as SendIcon } from "@mui/icons-material";
+import { Box, Button, Container, Grid } from "@mui/material";
 import DepositTab from "./DepositTab";
 import WithdrawTab from "./WithdrawTab";
 import HistoryTab from "./HistoryTab";
 
 const Body = ({
+  keplrNetworkChain,
+  metamaskNetworkChain,
   tokenAmount,
   handleAmountChange,
   ethReceiver,
@@ -29,14 +31,10 @@ const Body = ({
   }, [claimClicked]);
 
   const handleClaim = async (key) => {
-    try {
-      const response = await fetch(`http://104.197.22.23:8000/api/proof/${key}`);
-      const proofData = await response.json();
-      console.log("Proof data:", proofData);
-      setClaimClicked(true);
+    const proofData = await getClaimProof(key); // Call the getClaimProof function
+    if (proofData) {
       setProofData(proofData);
-    } catch (error) {
-      console.error("Error fetching proof:", error);
+      setClaimClicked(true);
     }
   };
 
@@ -49,6 +47,8 @@ const Body = ({
       case "deposit":
         return (
           <DepositTab
+            keplrNetworkChain={keplrNetworkChain}
+            metamaskNetworkChain={metamaskNetworkChain}
             tokenAmount={tokenAmount}
             handleAmountChange={handleAmountChange}
             ethReceiver={ethReceiver}
@@ -70,7 +70,11 @@ const Body = ({
         return (
           <>
             {/* Other components... */}
-            <HistoryTab cosmosSender={cosmosSender} handleClaim={handleClaim} />
+            <HistoryTab
+              cosmosSender={cosmosSender}
+              ethReceiver={ethReceiver}
+              handleClaim={handleClaim}
+            />
             {/* Other components... */}
           </>
         );

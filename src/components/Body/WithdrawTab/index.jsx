@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Button, Grid, MenuItem, TextField } from "@mui/material";
 import { Send as SendIcon } from "@mui/icons-material";
+import { claimTransaction } from "src/contracts/claimTransaction"; // Import the claimTransaction function
+import { TOKENS } from "src/constants";
 
 const WithdrawTab = ({
   ethReceiver,
@@ -20,25 +22,29 @@ const WithdrawTab = ({
 
   useEffect(() => {
     if (proofData) {
-      setPiA(proofData.proof.pi_a.join(", "));
-      setPiB(proofData.proof.pi_b.map((arr) => arr.join(", ")).join("; "));
-      setPiC(proofData.proof.pi_c.join(", "));
-      setEthBridge(proofData.public[0])
-      setReceiver(proofData.public[1])
-      setAmount(proofData.public[2])
-      setEthToken(proofData.public[3])
-      setKey(proofData.public[4])
-      setDepositRoot(proofData.public[5])
+      console.log(proofData)
+      setPiA(proofData.pi_a.join(", "));
+      setPiB(proofData.pi_b.map((arr) => arr.join(", ")).join("; "));
+      setPiC(proofData.pi_c.join(", "));
+      setEthBridge(proofData.eth_bridge_address)
+      setReceiver(proofData.eth_receiver_address)
+      setAmount(proofData.amount)
+
+      let symbol = getSymbolByEthAddress(proofData.eth_token_address);
+
+      setEthToken(symbol)
+      setKey(proofData.key)
+      setDepositRoot(proofData.deposit_root)
 
       // Fill other fields with data from proofData.public...
     }
   }, [proofData]);
 
-  const tokenAddresses = {
-    BTC: "0x38A9877c82C53cA48D64E3c2176295df60F0d826", // Replace with the actual BTC token address
-    ETH: "0x38A9877c82C53cA48D64E3c2176295df60F0d826", // Replace with the actual ETH token address
-    XRP: "0x38A9877c82C53cA48D64E3c2176295df60F0d826", // Replace with the actual XRP token address
-    HIJIN: "0x38A9877c82C53cA48D64E3c2176295df60F0d826", // Replace with the actual HIJIN token address
+  const getSymbolByEthAddress = (eth_address) => {
+    const coinData = Object.values(TOKENS).find(
+      (coin) => coin.eth_address.toLowerCase() === eth_address.toLowerCase()
+    );
+    return coinData ? coinData.symbol : null;
   };
 
   const handlePiAChange = (event) => {
@@ -79,8 +85,15 @@ const WithdrawTab = ({
     setDepositRoot(event.target.value);
   };
 
-  const handleClaim = () => {
-    // Implement claim logic here
+  const handleClaim = async () => {
+    try {
+      // Call the claimTransaction function with the proofData
+      await claimTransaction(proofData);
+      // Perform any actions or show success message as needed
+    } catch (error) {
+      console.error("Error claiming transaction:", error);
+      // Handle errors or show error message
+    }
   };
 
   return (

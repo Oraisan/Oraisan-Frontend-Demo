@@ -4,13 +4,24 @@ import React, { useState, useEffect } from "react";
 import { Grid, Typography, Button, Accordion, AccordionSummary, AccordionDetails } from "@mui/material";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
-const HistoryTab = ({ cosmosSender, handleClaim}) => {
+import { BASE_API_URL } from "src/constants";
+
+const HistoryTab = ({ cosmosSender, ethReceiver, handleClaim}) => {
   const [transactionHistory, setTransactionHistory] = useState([]);
 
   useEffect(() => {
     const fetchTransactionHistory = async () => {
+      let url = BASE_API_URL + "infor?"
       try {
-        const response = await fetch(`http://104.197.22.23:8000/api/infor/${cosmosSender}`);
+        if (cosmosSender) {
+          url = url +  "sender=" + cosmosSender + "&"
+        } 
+
+        if (ethReceiver) {
+            url = url + "receiver=" + ethReceiver
+        }
+        console.log(url)
+        const response = await fetch(url);
         const data = await response.json();
         setTransactionHistory(data);
       } catch (error) {

@@ -1,9 +1,12 @@
 import React, { useState } from "react";
 import { Button, Container, Grid, MenuItem, TextField, Typography } from "@mui/material";
-import { queryUserTokenBalance } from "src/services/kelpWallet";
-import { sendToken } from "src/services/transferToken";
+import { queryUserTokenBalance } from "src/contracts/keplrWallet";
+import { sendToken } from "src/contracts/transferToken";
+import { TOKENS, COSMOS_NETWORK } from "src/constants";
 
 const DepositTab = ({
+  keplrNetworkChain,
+  metamaskNetworkChain,
   tokenAmount,
   handleAmountChange,
   ethReceiver,
@@ -31,7 +34,7 @@ const DepositTab = ({
   const handleTransfer = async () => {
     try {
       // Call the sendToken function here
-      const res = await sendToken(cosmosTokenAddress, tokenAmount, ethReceiver);
+      const res = await sendToken(keplrNetworkChain, metamaskNetworkChain, cosmosTokenAddress, tokenAmount, ethReceiver);
       console.log("Transaction result:", res);
       // Perform any actions or show success message as needed
     } catch (error) {
@@ -43,59 +46,20 @@ const DepositTab = ({
   // Function to get the balance of a coin
   const getCoinBalance = async (coin, keplerAddress) => {
     // Switch case to handle different coin balances
-    switch (coin) {
-      case "BTC":
-        // Query balance of BTC token for the user's Kepler address
-        // Replace with your implementation
-        return { balance: 0 };
-
-      case "ETH":
-        // Query balance of ETH token for the user's Kepler address
-        // Replace with your implementation
-        return { balance: 0 };
-
-      case "XRP":
-        // Query balance of XRP token for the user's Kepler address
-        // Replace with your implementation
-        return { balance: 0 };
-
-      case "HIJIN":
-        // Query balance of HIJIN token for the user's Kepler address
-        // Use the queryUserTokenBalance function from api.js
-        return await queryUserTokenBalance(
-          keplerAddress,
-          "orai1wdd0qs5f2swxh2trmdvu2xu94qu49zpnqpmazj02ts2xkhqu3x4qu3smud",
-          "https://testnet-rpc.orai.io:443/"
-        );
-
-      default:
-        return { balance: 0 };
+    try {
+      return await queryUserTokenBalance(
+        keplerAddress,
+        TOKENS[coin]?.cosmos_address,
+        COSMOS_NETWORK[keplrNetworkChain]?.rpc
+      );
+    } catch {
+      return { balance: 0 };
     }
   };
 
   // Function to get the cosmosTokenAddress based on the selected coin
   const getCosmosTokenAddress = (coin) => {
-    // Switch case to handle different coin addresses
-    switch (coin) {
-      case "BTC":
-        // Return the BTC token address
-        return "orai1wdd0qs5f2swxh2trmdvu2xu94qu49zpnqpmazj02ts2xkhqu3x4qu3smud"; // Replace with the actual address
-
-      case "ETH":
-        // Return the ETH token address
-        return "orai1wdd0qs5f2swxh2trmdvu2xu94qu49zpnqpmazj02ts2xkhqu3x4qu3smud"; // Replace with the actual address
-
-      case "XRP":
-        // Return the XRP token address
-        return "orai1wdd0qs5f2swxh2trmdvu2xu94qu49zpnqpmazj02ts2xkhqu3x4qu3smud"; // Replace with the actual address
-
-      case "HIJIN":
-        // Return the HIJIN token address
-        return "orai1wdd0qs5f2swxh2trmdvu2xu94qu49zpnqpmazj02ts2xkhqu3x4qu3smud"; // Replace with the actual address
-
-      default:
-        return "";
-    }
+    return TOKENS[coin]?.cosmos_address
   };
 
   return (
@@ -129,10 +93,11 @@ const DepositTab = ({
             onChange={handleCoinChange}
             fullWidth
           >
-            <MenuItem value="BTC">BTC</MenuItem>
-            <MenuItem value="ETH">ETH</MenuItem>
-            <MenuItem value="XRP">XRP</MenuItem>
-            <MenuItem value="HIJIN">HIJIN</MenuItem>
+            {Object.keys(TOKENS).map((coin) => (
+              <MenuItem key={coin} value={coin}>
+                {coin}
+              </MenuItem>
+            ))}
           </TextField>
         </Grid>
         <Grid item xs={12}>

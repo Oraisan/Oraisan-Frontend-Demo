@@ -1,11 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { Button, Container, Grid, Typography } from "@mui/material";
-import {
-  Send as SendIcon,
-  Settings as SettingsIcon,
-} from "@mui/icons-material";
+import {Container, Grid } from "@mui/material";
 import Body from "./Body";
 import Header from "./Header";
+import { ETH_NETWORK } from "src/constants";
 
 function Bridge() {
   const [cosmosSender, setCosmosSender] = useState("");
@@ -36,13 +33,7 @@ function Bridge() {
     // Add event listener for MetaMask chain changes
     if (window.ethereum) {
       const handleMetamaskChainChange = (chainId) => {
-        if (chainId === "97") {
-          setMetamaskNetworkChain("BSC Testnet");
-        } else if (chainId === "4002") {
-          setMetamaskNetworkChain("FTM Testnet");
-        } else {
-          setMetamaskNetworkChain("");
-        }
+        setMetamaskNetworkChain(ETH_NETWORK[chainId]?.name)
       };
 
       window.ethereum.on("chainChanged", handleMetamaskChainChange);
@@ -107,18 +98,11 @@ function Bridge() {
 
       // Set the network chain to "Ethereum Network"
       // Get the network ID from Metamask
-      const networkId = await window.ethereum.request({
+      const chainId = await window.ethereum.request({
         method: "net_version",
       });
-      
-      // Map the network ID to the network name
-      if (networkId === "97") {
-        setMetamaskNetworkChain("BSC Testnet");
-      } else if (networkId === "4002") {
-        setMetamaskNetworkChain("FTM Testnet");
-      } else {
-        setMetamaskNetworkChain("");
-      }
+
+      setMetamaskNetworkChain(ETH_NETWORK[chainId]?.name)
 
       // Display a success message or perform any other actions
       console.log("Connected to Metamask wallet");
@@ -167,6 +151,8 @@ function Bridge() {
         spacing={2}
       >
         <Body
+          keplrNetworkChain={keplrNetworkChain}
+          metamaskNetworkChain={metamaskNetworkChain}
           tokenAmount={tokenAmount}
           handleAmountChange={handleAmountChange}
           ethReceiver={ethReceiver}
