@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {Container, Grid } from "@mui/material";
+import { Container, Box, Grid } from "@mui/material";
 import Body from "./Body";
 import Header from "./Header";
 import { ETH_NETWORK } from "src/constants";
@@ -33,7 +33,7 @@ function Bridge() {
     // Add event listener for MetaMask chain changes
     if (window.ethereum) {
       const handleMetamaskChainChange = (chainId) => {
-        setMetamaskNetworkChain(ETH_NETWORK[chainId]?.name)
+        setMetamaskNetworkChain(ETH_NETWORK[chainId]?.name);
       };
 
       window.ethereum.on("chainChanged", handleMetamaskChainChange);
@@ -102,7 +102,7 @@ function Bridge() {
         method: "net_version",
       });
 
-      setMetamaskNetworkChain(ETH_NETWORK[chainId]?.name)
+      setMetamaskNetworkChain(ETH_NETWORK[chainId]?.name);
 
       // Display a success message or perform any other actions
       console.log("Connected to Metamask wallet");
@@ -128,15 +128,7 @@ function Bridge() {
   };
 
   return (
-    <Container
-      maxWidth={false}
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        minHeight: "100vh",
-      }}
-    >
+    <Box sx={{ width: "100%" }}>
       <Header
         handleKeplerConnect={handleKeplerConnect}
         handleMetamaskConnect={handleMetamaskConnect}
@@ -162,7 +154,7 @@ function Bridge() {
           maxWidth="sm" // Set the maxWidth prop here
         />
       </Grid>
-    </Container>
+    </Box>
   );
 }
 

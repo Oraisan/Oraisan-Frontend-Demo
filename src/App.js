@@ -1,13 +1,9 @@
-import React from 'react';
-import Bridge from './components';
-import { Container, Typography } from '@mui/material';
+import React from "react";
+import Bridge from "./components";
+import "./App.css";
 
 function App() {
-  return (
-    <Container maxWidth="flase">
-      <Bridge />
-    </Container>
-  );
+  return <Bridge />;
 }
 
 export default App;

@@ -1,6 +1,6 @@
 import React from "react";
-import { Button, Grid, Typography } from "@mui/material";
-import { Settings as SettingsIcon } from "@mui/icons-material";
+import { Button, Box, Typography } from "@mui/material";
+import keplerIcon from "../../assets/Keplr_icon_ver.1.3_2.svg";
 
 const Header = ({
   handleKeplerConnect,
@@ -9,17 +9,34 @@ const Header = ({
   metamaskNetworkChain,
 }) => {
   return (
-    <Grid container spacing={2} alignItems="center">
-      <Grid item xs={6}>
-        <Typography variant="h4" gutterBottom>
-          Cosmos to Ethereum Bridge
-        </Typography>
-      </Grid>
-      <Grid item xs={6} container justifyContent="flex-end">
+    <Box
+      py={2}
+      px={5}
+      sx={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        width: "100%",
+        boxSizing: "border-box",
+      }}
+    >
+      <Typography variant="h4" sx={{ fontFamily: "monospace" }}>
+        Cosmos to Ethereum Bridge
+      </Typography>
+
+      <Box>
         {keplrNetworkChain ? (
           <Button
             variant="contained"
-            startIcon={<SettingsIcon />}
+            startIcon={
+              <img
+                src={keplerIcon}
+                width="30px"
+                height="30px"
+                alt="keplerIcon"
+              />
+            }
+            sx={{ mr: 3 }}
             onClick={handleKeplerConnect}
           >
             {keplrNetworkChain}
@@ -27,7 +44,15 @@ const Header = ({
         ) : (
           <Button
             variant="contained"
-            startIcon={<SettingsIcon />}
+            startIcon={
+              <img
+                src={keplerIcon}
+                width="30px"
+                height="30px"
+                alt="keplerIcon"
+              />
+            }
+            sx={{ mr: 3 }}
             onClick={handleKeplerConnect}
           >
             Connect Kepler
@@ -36,7 +61,14 @@ const Header = ({
         {metamaskNetworkChain ? (
           <Button
             variant="contained"
-            startIcon={<SettingsIcon />}
+            startIcon={
+              <img
+                src="https://upload.wikimedia.org/wikipedia/commons/3/36/MetaMask_Fox.svg"
+                alt="metamask"
+                width="30px"
+                height="30px"
+              />
+            }
             onClick={handleMetamaskConnect}
           >
             {metamaskNetworkChain}
@@ -44,14 +76,21 @@ const Header = ({
         ) : (
           <Button
             variant="contained"
-            startIcon={<SettingsIcon />}
+            startIcon={
+              <img
+                src="https://upload.wikimedia.org/wikipedia/commons/3/36/MetaMask_Fox.svg"
+                alt="metamask"
+                width="30px"
+                height="30px"
+              />
+            }
             onClick={handleMetamaskConnect}
           >
             Connect Metamask
           </Button>
         )}
-      </Grid>
-    </Grid>
+      </Box>
+    </Box>
   );
 };
 
