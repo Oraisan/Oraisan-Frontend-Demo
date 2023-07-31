@@ -3,6 +3,7 @@ import { toChecksumAddress } from 'ethereumjs-util';
 
 function hexToDecimal(hex) {
     // Remove the '0x' prefix if present
+    console.log("hhex", hex)
     if (hex.startsWith("0x")) {
         hex = hex.slice(2);
     }

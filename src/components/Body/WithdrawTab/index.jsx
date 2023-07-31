@@ -136,7 +136,6 @@ const WithdrawTab = ({
           value={receiver}
           onChange={handleReceiverChange}
           fullWidth
-          disabled
         />
       </Grid>
       <Grid item xs={12}>

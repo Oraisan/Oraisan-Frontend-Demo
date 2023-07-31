@@ -5,6 +5,12 @@ export const ETH_NETWORK = {
     provider_url: "https://data-seed-prebsc-1-s1.binance.org:8545/",
     oraisan_brige: "0x8D202BDb82A9628D43F6a3B8dCacD424A2cf8B3b"
   },
+  "BSC Testnet": {
+    chainId: 97,
+    name: "BSC Testnet",
+    provider_url: "https://data-seed-prebsc-1-s1.binance.org:8545/",
+    oraisan_brige: "0x8D202BDb82A9628D43F6a3B8dCacD424A2cf8B3b"
+  },
   4002: {
     chainId: 4002,
     name: "FTM Testnet",

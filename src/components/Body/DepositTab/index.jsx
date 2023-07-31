@@ -67,6 +67,16 @@ const DepositTab = ({
       <Grid container spacing={2} my="auto">
         <Grid item xs={12}>
           <TextField
+            label="Sender Address"
+            value={cosmosSender}
+            fullWidth
+            disabled
+            sx={{ fontWeight: "bold", color: "black" }}
+          />
+        </Grid>
+
+        <Grid item xs={12}>
+          <TextField
             label="Recipient Address"
             value={ethReceiver}
             onChange={handleRecipientAddressChange}
@@ -75,15 +85,7 @@ const DepositTab = ({
             sx={{ fontWeight: "bold", color: "black" }}
           />
         </Grid>
-        <Grid item xs={12}>
-          <TextField
-            label="Sender Address"
-            value={cosmosSender}
-            fullWidth
-            disabled
-            sx={{ fontWeight: "bold", color: "black" }}
-          />
-        </Grid>
+
 
         <Grid item xs={12}>
           <TextField

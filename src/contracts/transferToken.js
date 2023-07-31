@@ -11,18 +11,18 @@ async function getWallet(keplrNetworkChain) {
   if (!keplrWindow.getOfflineSigner || !keplrWindow.keplr) {
     throw new Error("Keplr extension not found");
   }
-
+  console.log("a")
   // Request access to Keplr
   await keplrWindow.keplr.enable(keplrNetworkChain);
-
+  console.log("b")
   // Get the offline signer from Keplr
   const offlineSigner = keplrWindow.getOfflineSigner(keplrNetworkChain);
-
+  console.log("c")
   return offlineSigner;
 }
 
 async function getClient(keplrNetworkChain) {
-  const wallet = await getWallet();
+  const wallet = await getWallet(keplrNetworkChain);
   const client = await SigningCosmWasmClient.connectWithSigner(COSMOS_NETWORK[keplrNetworkChain]?.rpc, wallet, {
     gasPrice: {
       denom: "orai",
@@ -33,15 +33,20 @@ async function getClient(keplrNetworkChain) {
 }
 
 async function sendToken(keplrNetworkChain, metamaskNetworkChain, cosmosTokenAddress, amount, ethReceiver) {
+  console.log("keplr chainid", keplrNetworkChain)
   const wallet = await getWallet(keplrNetworkChain);
-  const client = await getClient(keplrNetworkChain);
-  const senderAddress = (await wallet.getAccounts())[0].address;
   console.log("wallet", wallet)
+  const client = await getClient(keplrNetworkChain);
   console.log("client", client)
+  const senderAddress = (await wallet.getAccounts())[0].address;
   console.log("senderAddress", senderAddress)
+  console.log("metamaskNetworkChain", metamaskNetworkChain)
+
+  // const chainId = ETH_NETWORK[metamaskNetworkChain]?.chainId
+  // console.log(ETH_NETWORK[metamaskNetworkChain]?.oraisan_brige)
   const msg_bridge = {
-    destination_chainid: metamaskNetworkChain,
-    eth_bridge_address: ETH_NETWORK[metamaskNetworkChain]?.oraisan_bridge,
+    destination_chainid: ETH_NETWORK[metamaskNetworkChain]?.chainId,
+    eth_bridge_address: hexToDecimal(ETH_NETWORK[metamaskNetworkChain]?.oraisan_brige),
     eth_receiver: hexToDecimal(ethReceiver),
   };
 
@@ -56,6 +61,7 @@ async function sendToken(keplrNetworkChain, metamaskNetworkChain, cosmosTokenAdd
   console.log("amount", msg.send.amount)
   console.log("msg", msg)
   const res = await client.execute(senderAddress, cosmosTokenAddress, msg, fee);
+  // console.log("res", res)
   return res;
 }
 
