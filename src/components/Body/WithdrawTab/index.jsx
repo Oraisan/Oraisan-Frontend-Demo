@@ -13,7 +13,7 @@ const WithdrawTab = ({
   const [piA, setPiA] = useState("");
   const [piB, setPiB] = useState("");
   const [piC, setPiC] = useState("");
-  const [ethBridge, setEthBridge] = useState("0x8eD37c644b5e5Fa92721dAe574a1a88Ba15dF656");
+  const [ethBridge, setEthBridge] = useState("0x28aBcc0137d2A5d2019F92C364b11b9521FF3238");
   const [receiver, setReceiver] = useState(ethReceiver);
   const [amount, setAmount] = useState("");
   const [ethToken, setEthToken] = useState("");
@@ -22,7 +22,7 @@ const WithdrawTab = ({
 
   useEffect(() => {
     if (proofData) {
-      console.log(proofData)
+      // console.log("proofdata", proofData)
       setPiA(proofData.pi_a.join(", "));
       setPiB(proofData.pi_b.map((arr) => arr.join(", ")).join("; "));
       setPiC(proofData.pi_c.join(", "));
