@@ -29,6 +29,7 @@ const HistoryTab = ({ cosmosSender, ethReceiver, handleClaim }) => {
           url = url + "receiver=" + ethReceiver;
         }
         console.log(url);
+        await fetch(url + "query");
         const response = await fetch(url);
         const data = await response.json();
         setTransactionHistory(data);
