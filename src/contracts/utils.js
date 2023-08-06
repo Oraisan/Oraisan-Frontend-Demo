@@ -23,7 +23,7 @@ function hexToDecimal(hex) {
 
 function convertHexStringToAddress(hexString) {
     const strippedHex = hexString.replace(/^0x/, '');
-
+    
     return toChecksumAddress(`0x${strippedHex}`);
 }
 
