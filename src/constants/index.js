@@ -39,6 +39,6 @@ export const TOKENS = {
     eth_address: "0xb04Ff02a4cb14322fCD871949C7E34D2633E7631"
   },
 }
-export const BASE_API_URL = "http://34.16.116.182:8000/api/";
+export const BASE_API_URL = "http://34.80.35.229:8000/api/";
 // export const BASE_API_URL = "http://192.168.1.37:8000";
 
