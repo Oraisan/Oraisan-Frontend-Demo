@@ -1,9 +1,17 @@
 import React, { useState } from "react";
-import { Button, Container, Grid, MenuItem, TextField, Typography } from "@mui/material";
+import {
+  Button,
+  Container,
+  Grid,
+  MenuItem,
+  TextField,
+  Typography,
+  CircularProgress,
+} from "@mui/material";
 import { queryUserTokenBalance } from "src/contracts/keplrWallet";
 import { sendToken } from "src/contracts/transferToken";
 import { TOKENS, COSMOS_NETWORK } from "src/constants";
-
+import { useSnackbar } from "notistack";
 const DepositTab = ({
   keplrNetworkChain,
   metamaskNetworkChain,
@@ -16,6 +24,8 @@ const DepositTab = ({
   const [selectedCoin, setSelectedCoin] = useState("");
   const [balance, setBalance] = useState({ balance: 0 });
   const [cosmosTokenAddress, setCosmosTokenAddress] = useState("");
+  const { enqueueSnackbar } = useSnackbar();
+  const [startTransaction, setStartTransaction] = useState(false);
 
   const handleCoinChange = async (event) => {
     setSelectedCoin(event.target.value);
@@ -33,11 +43,29 @@ const DepositTab = ({
 
   const handleTransfer = async () => {
     try {
+      setStartTransaction(true);
       // Call the sendToken function here
-      const res = await sendToken(keplrNetworkChain, metamaskNetworkChain, cosmosTokenAddress, tokenAmount, ethReceiver);
+      const res = await sendToken(
+        keplrNetworkChain,
+        metamaskNetworkChain,
+        cosmosTokenAddress,
+        tokenAmount,
+        ethReceiver
+      );
       console.log("Transaction result:", res);
+      setStartTransaction(false);
+      enqueueSnackbar("Transaction Completed!", {
+        autoHideDuration: 3000,
+        variant: "success",
+      });
+
       // Perform any actions or show success message as needed
     } catch (error) {
+      setStartTransaction(false);
+      enqueueSnackbar("Transaction error!", {
+        autoHideDuration: 3000,
+        variant: "error",
+      });
       console.error("Error transferring tokens:", error);
       // Handle errors or show error message
     }
@@ -59,7 +87,7 @@ const DepositTab = ({
 
   // Function to get the cosmosTokenAddress based on the selected coin
   const getCosmosTokenAddress = (coin) => {
-    return TOKENS[coin]?.cosmos_address
+    return TOKENS[coin]?.cosmos_address;
   };
 
   return (
@@ -85,7 +113,6 @@ const DepositTab = ({
             sx={{ fontWeight: "bold", color: "black" }}
           />
         </Grid>
-
 
         <Grid item xs={12}>
           <TextField
@@ -146,7 +173,11 @@ const DepositTab = ({
               parseFloat(tokenAmount) > parseFloat(balance.balance)
             }
           >
-            Transfer
+            {startTransaction === true ? (
+              <CircularProgress sx={{ color: "white" }} />
+            ) : (
+              "Transfer"
+            )}
           </Button>
         </Grid>
       </Grid>

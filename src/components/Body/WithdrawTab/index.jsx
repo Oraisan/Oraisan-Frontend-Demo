@@ -3,6 +3,7 @@ import { Button, Grid, MenuItem, TextField } from "@mui/material";
 import { Send as SendIcon } from "@mui/icons-material";
 import { claimTransaction } from "src/contracts/claimTransaction"; // Import the claimTransaction function
 import { TOKENS } from "src/constants";
+import { useSnackbar } from "notistack";
 
 const WithdrawTab = ({
   ethReceiver,
@@ -13,12 +14,15 @@ const WithdrawTab = ({
   const [piA, setPiA] = useState("");
   const [piB, setPiB] = useState("");
   const [piC, setPiC] = useState("");
-  const [ethBridge, setEthBridge] = useState("0x28aBcc0137d2A5d2019F92C364b11b9521FF3238");
+  const [ethBridge, setEthBridge] = useState(
+    "0x0dE4B59d56187Fa4F551730fcefC39523D119936"
+  );
   const [receiver, setReceiver] = useState(ethReceiver);
   const [amount, setAmount] = useState("");
   const [ethToken, setEthToken] = useState("");
   const [key, setKey] = useState("");
   const [depositRoot, setDepositRoot] = useState("");
+  const { enqueueSnackbar } = useSnackbar();
 
   useEffect(() => {
     if (proofData) {
@@ -26,15 +30,15 @@ const WithdrawTab = ({
       setPiA(proofData.pi_a.join(", "));
       setPiB(proofData.pi_b.map((arr) => arr.join(", ")).join("; "));
       setPiC(proofData.pi_c.join(", "));
-      setEthBridge(proofData.eth_bridge_address)
-      setReceiver(proofData.eth_receiver_address)
-      setAmount(proofData.amount)
+      setEthBridge(proofData.eth_bridge_address);
+      setReceiver(proofData.eth_receiver_address);
+      setAmount(proofData.amount);
 
       let symbol = getSymbolByEthAddress(proofData.eth_token_address);
 
-      setEthToken(symbol)
-      setKey(proofData.key)
-      setDepositRoot(proofData.deposit_root)
+      setEthToken(symbol);
+      setKey(proofData.key);
+      setDepositRoot(proofData.deposit_root);
 
       // Fill other fields with data from proofData.public...
     }
@@ -91,6 +95,10 @@ const WithdrawTab = ({
       await claimTransaction(proofData);
       // Perform any actions or show success message as needed
     } catch (error) {
+      enqueueSnackbar("Claiming transaction error!", {
+        variant: "error",
+        autoHideDuration: 3000,
+      });
       console.error("Error claiming transaction:", error);
       // Handle errors or show error message
     }
@@ -123,12 +131,7 @@ const WithdrawTab = ({
         />
       </Grid>
       <Grid item xs={12}>
-        <TextField
-          label="ETH Bridge"
-          value={ethBridge}
-          fullWidth
-          disabled
-        />
+        <TextField label="ETH Bridge" value={ethBridge} fullWidth disabled />
       </Grid>
       <Grid item xs={12}>
         <TextField
@@ -161,7 +164,12 @@ const WithdrawTab = ({
         </TextField>
       </Grid>
       <Grid item xs={12}>
-        <TextField label="Key" value={key} onChange={handleKeyChange} fullWidth />
+        <TextField
+          label="Key"
+          value={key}
+          onChange={handleKeyChange}
+          fullWidth
+        />
       </Grid>
       <Grid item xs={12}>
         <TextField
