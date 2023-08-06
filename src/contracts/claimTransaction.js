@@ -18,7 +18,7 @@ const claimTransaction = async (proofData) => {
             proofData.amount,
             proofData.eth_token_address,
             proofData.key,
-            proofData.depositRoot
+            proofData.deposit_root
             )
         const res = await contractSender.methods
             .claimTransaction(
@@ -35,7 +35,7 @@ const claimTransaction = async (proofData) => {
                     proofData.deposit_root
                 ]
             )
-            .send({ from: ethAddress });
+            .send({ from: ethAddress, gasPrice: Web3.utils.toWei('10', 'gwei'), });
         await res.wait();
     } catch (error) {
         // Handle any errors that occur during the connection
