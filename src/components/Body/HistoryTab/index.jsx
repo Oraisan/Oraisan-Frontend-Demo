@@ -86,7 +86,7 @@ const HistoryTab = ({ cosmosSender, ethReceiver, handleClaim }) => {
             </Typography>
           ) : (
             transactionHistory.map((transaction, index) => (
-              <Accordion key={transaction._id}>
+              <Accordion key={transaction.key}>
                 <AccordionSummary
                   sx={{ position: "relative" }}
                   expandIcon={<ExpandMoreIcon />}
@@ -98,7 +98,7 @@ const HistoryTab = ({ cosmosSender, ethReceiver, handleClaim }) => {
                       ? `Deposit ${transaction.key}`
                       : `Withdraw ${transaction.key}`}
                   </Typography>
-                  {!transaction.is_deposit && (
+                  {transaction.status === "CAN_CLAIM" && (
                     <Button
                       sx={{
                         position: "absolute",
@@ -113,7 +113,42 @@ const HistoryTab = ({ cosmosSender, ethReceiver, handleClaim }) => {
                     >
                       Claim
                     </Button>
-                  )}
+                  )
+                  }
+                  {transaction.status === "IN_QUEUE" && (
+                    <Button
+                      sx={{
+                        position: "absolute",
+                        right: 60,
+                        top: "50%",
+                        height: "30px",
+                        transform: "translateY(-50%)",
+                      }}
+                      variant="contained"
+                      color="primary"
+                      disabled
+                    >
+                      Processing
+                    </Button>
+                  )
+                  }
+                  {(transaction.status !== "IN_QUEUE" && transaction.status !== "CAN_CLAIM") && (
+                    <Button
+                      sx={{
+                        position: "absolute",
+                        right: 60,
+                        top: "50%",
+                        height: "30px",
+                        transform: "translateY(-50%)",
+                      }}
+                      variant="contained"
+                      color="primary"
+                      disabled
+                    >
+                      Claimed
+                    </Button>
+                  )
+                  }
                 </AccordionSummary>
                 <AccordionDetails>
                   <Grid

@@ -2,21 +2,18 @@ import React, { useEffect, useState } from "react";
 import { Button, Grid, MenuItem, TextField } from "@mui/material";
 import { Send as SendIcon } from "@mui/icons-material";
 import { claimTransaction } from "src/contracts/claimTransaction"; // Import the claimTransaction function
-import { TOKENS } from "src/constants";
+import { TOKENS, ETH_NETWORK } from "src/constants";
 import { useSnackbar } from "notistack";
 
 const WithdrawTab = ({
+  metamaskNetworkChain,
   ethReceiver,
-  handleRecipientAddressChange,
-  handleTransfer,
   proofData,
 }) => {
   const [piA, setPiA] = useState("");
   const [piB, setPiB] = useState("");
   const [piC, setPiC] = useState("");
-  const [ethBridge, setEthBridge] = useState(
-    "0x0dE4B59d56187Fa4F551730fcefC39523D119936"
-  );
+  const [ethBridge, setEthBridge] = useState();
   const [receiver, setReceiver] = useState(ethReceiver);
   const [amount, setAmount] = useState("");
   const [ethToken, setEthToken] = useState("");
@@ -42,6 +39,13 @@ const WithdrawTab = ({
 
       // Fill other fields with data from proofData.public...
     }
+    console.log(metamaskNetworkChain)
+    if (metamaskNetworkChain !== undefined) {
+      setEthBridge(ETH_NETWORK[metamaskNetworkChain].oraisan_brige)
+    } else {
+      setEthBridge("")
+    }
+
   }, [proofData]);
 
   const getSymbolByEthAddress = (eth_address) => {

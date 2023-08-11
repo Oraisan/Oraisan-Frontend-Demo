@@ -110,9 +110,10 @@ const Body = ({
             )}
             {tab === 1 && (
               <WithdrawTab
+                metamaskNetworkChain={metamaskNetworkChain}
                 ethReceiver={ethReceiver}
-                handleRecipientAddressChange={handleRecipientAddressChange}
-                handleTransfer={handleTransfer}
+                // handleRecipientAddressChange={handleRecipientAddressChange}
+                // handleTransfer={handleTransfer}
                 proofData={proofData} // Pass proofData to WithdrawTab
               />
             )}
